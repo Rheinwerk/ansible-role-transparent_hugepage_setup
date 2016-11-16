@@ -1,0 +1,8 @@
+---
+# defaults file for ansible-role-transparent_hugepage_setup
+
+_transparent_hugepage_setup:
+  settings:
+    enabled: "never"
+    defrag:  "never"
+

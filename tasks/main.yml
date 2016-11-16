@@ -1,0 +1,14 @@
+---
+#
+# tasks file for ansible-role-transparent_hugepage_setup
+#
+# vim:et:ts=2:ft=ansible
+
+- name: Modify rc.local to configure transparent huge pages
+  lineinfile: dest=/etc/rc.local line='/bin/echo {{ item.value }}  > /sys/kernel/mm/transparent_hugepage/{{ item.key }}' insertbefore='exit 0'
+  with_dict: "{{ _transparent_hugepage_setup.settings }}"
+
+- name: Disable transparent huge pages now
+  shell: /bin/echo {{ item.value }} > /sys/kernel/mm/transparent_hugepage/{{ item.key }}
+  with_dict: "{{ _transparent_hugepage_setup.settings }}"
+
