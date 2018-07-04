@@ -11,4 +11,3 @@
 - name: Disable transparent huge pages now
   shell: /bin/echo {{ item.value }} > /sys/kernel/mm/transparent_hugepage/{{ item.key }}
   with_dict: "{{ _transparent_hugepage_setup.settings }}"
-
