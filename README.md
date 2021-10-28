@@ -3,7 +3,7 @@ Transparent Hugepage Setup
 
 This role can be used to set up modified transparent_hugepage settings
 
-[![Build Status](https://travis-ci.org/Rheinwerk/ansible-role-transparent_hugepage_setup.svg?branch=master)](https://travis-ci.org/Rheinwerk/ansible-role-transparent_hugepage_setup)
+[![Build Status](https://github.com/Rheinwerk/ansible-role-transparent_hugepage_setup/actions/workflows/ci.yml/badge.svg)](https://github.com/Rheinwerk/ansible-role-transparent_hugepage_setup/actions/workflows/ci.yml)
 
 Requirements
 ------------
