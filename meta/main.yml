@@ -7,8 +7,8 @@ galaxy_info:
   platforms:
   - name: Ubuntu
     versions:
-    - trusty
     - bionic
+    - focal
   galaxy_tags:
     - transparent_hugepage
 dependencies: []

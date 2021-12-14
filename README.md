@@ -1,7 +1,9 @@
 Transparent Hugepage Setup
 =========
 
-This role can be used to set up modified transparent_hugepage settings
+This role can be used to set up modified transparent_hugepage settings.
+
+The role itself only deploys a systemd service `transparent-hugepage-setup` that you must take a dependency on.
 
 [![Build Status](https://github.com/Rheinwerk/ansible-role-transparent_hugepage_setup/actions/workflows/ci.yml/badge.svg)](https://github.com/Rheinwerk/ansible-role-transparent_hugepage_setup/actions/workflows/ci.yml)
 
