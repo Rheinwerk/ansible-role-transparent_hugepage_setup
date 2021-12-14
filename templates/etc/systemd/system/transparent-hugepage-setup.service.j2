@@ -1,0 +1,7 @@
+[Unit]
+Description=Setup transparent hugepages
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "echo {{ _transparent_hugepage_setup.settings.enabled }} | tee /sys/kernel/mm/transparent_hugepage/enabled"
+ExecStart=/bin/sh -c "echo {{ _transparent_hugepage_setup.settings.defrag }} | tee /sys/kernel/mm/transparent_hugepage/defrag"
