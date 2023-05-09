@@ -2,7 +2,7 @@
 # vim:et:ts=2:ft=ansible
 
 - name: Copy transparent hugepage setup systemd service unit
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/{{ item }}"
     mode: "0644"
