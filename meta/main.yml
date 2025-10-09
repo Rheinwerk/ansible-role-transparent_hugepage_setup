@@ -1,6 +1,5 @@
 galaxy_info:
-  author: Daniel Schneller
-  namespace: rheinwerk
+  author: rheinwerk
   role_name: transparent_hugepage_setup
   description: Sets up transparent_hugepage settings
   company: Rheinwerk
