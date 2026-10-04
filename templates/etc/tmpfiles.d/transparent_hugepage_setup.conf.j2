@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+# Applied at boot by systemd-tmpfiles-setup.service, which runs before sysinit.target
+# and therefore before any regular service such as mongod starts.
+#Type Path                                                           Mode UID GID Age Argument
+{% for path, value in _transparent_hugepage_setup.settings.items() %}
+w     {{ '%-62s' | format('/sys/kernel/mm/transparent_hugepage/' ~ path) }} -    -   -   -   {{ value }}
+{% endfor %}
