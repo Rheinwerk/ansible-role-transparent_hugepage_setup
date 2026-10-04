@@ -1,0 +1,78 @@
+---
+# The shared Rheinwerk molecule scenario syncs its files with --ignore-existing,
+# so this verify playbook takes precedence over the scenario's placeholder.
+- name: Verify
+  hosts: all
+  gather_facts: false
+  vars:
+    thp_conf: /etc/tmpfiles.d/transparent_hugepage_setup.conf
+    # systemd-tmpfiles writes below this directory instead of the real /sys,
+    # so the test never touches the kernel settings of the host running it.
+    thp_root: /tmp/transparent_hugepage_setup-verify
+    thp_expected:
+      enabled: "always"
+      defrag: "defer+madvise"
+      khugepaged/max_ptes_none: "0"
+
+  tasks:
+    - name: Stat tmpfiles config
+      ansible.builtin.stat:
+        path: "{{ thp_conf }}"
+      register: thp_stat
+
+    - name: Assert tmpfiles config exists as root:root 0644
+      ansible.builtin.assert:
+        that:
+          - thp_stat.stat.exists
+          - thp_stat.stat.pw_name == 'root'
+          - thp_stat.stat.gr_name == 'root'
+          - thp_stat.stat.mode == '0644'
+
+    - name: Create directories for the sysfs stand-ins below the fake root
+      ansible.builtin.file:
+        path: "{{ thp_root }}/sys/kernel/mm/transparent_hugepage/{{ item.key | dirname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop: "{{ thp_expected | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+
+    - name: Create stand-ins for the sysfs files below the fake root
+      ansible.builtin.file:
+        path: "{{ thp_root }}/sys/kernel/mm/transparent_hugepage/{{ item.key }}"
+        state: touch
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ thp_expected | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+
+    - name: Apply the tmpfiles config with systemd-tmpfiles against the fake root
+      ansible.builtin.command:
+        argv:
+          - systemd-tmpfiles
+          - "--root={{ thp_root }}"
+          - --create
+          - "{{ thp_conf }}"
+      changed_when: false
+
+    - name: Read back what systemd-tmpfiles wrote
+      ansible.builtin.slurp:
+        src: "{{ thp_root }}/sys/kernel/mm/transparent_hugepage/{{ item.key }}"
+      loop: "{{ thp_expected | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      register: thp_written
+
+    - name: Assert every setting was written with its expected value
+      ansible.builtin.assert:
+        that:
+          - (item.content | b64decode | trim) == item.item.value
+        fail_msg: "{{ item.item.key }}: expected '{{ item.item.value }}', got '{{ item.content | b64decode | trim }}'"
+        quiet: true
+      loop: "{{ thp_written.results }}"
+      loop_control:
+        label: "{{ item.item.key }}"
