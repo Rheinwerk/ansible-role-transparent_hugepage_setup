@@ -1,10 +1,10 @@
 ---
 # vim:et:ts=2:ft=ansible
 
-- name: Copy transparent hugepage setup systemd service unit
+- name: Create transparent hugepage tmpfiles config
   ansible.builtin.template:
-    src: "{{ item }}.j2"
-    dest: "/{{ item }}"
+    src: "etc/tmpfiles.d/transparent_hugepage_setup.conf.j2"
+    dest: "/etc/tmpfiles.d/transparent_hugepage_setup.conf"
+    owner: root
+    group: root
     mode: "0644"
-  loop:
-    - etc/systemd/system/transparent-hugepage-setup.service

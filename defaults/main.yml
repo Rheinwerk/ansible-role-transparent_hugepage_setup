@@ -1,7 +1,11 @@
 ---
 # defaults file for ansible-role-transparent_hugepage_setup
 
+# Each key is a file below /sys/kernel/mm/transparent_hugepage/, each value is
+# written into it at boot by systemd-tmpfiles. The defaults are the settings
+# MongoDB 8.0 recommends for its tcmalloc-google allocator.
 _transparent_hugepage_setup:
   settings:
-    enabled: "never"
-    defrag:  "never"
+    enabled: "always"
+    defrag: "defer+madvise"
+    khugepaged/max_ptes_none: "0"
